@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <iomanip>
+#include <sstream>
 
 class ScalarConverter
 {
@@ -19,6 +20,7 @@ private:
 	static void convertInt(const std::string &input);
 	static void convertFloat(const std::string &input);
 	static void convertDouble(const std::string &input);
+	static void convertSpecial(const std::string &input);
 
 	static bool isChar(const std::string &input);
 	static bool isInt(const std::string &input);

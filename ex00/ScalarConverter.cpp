@@ -17,13 +17,16 @@ ScalarConverter::~ScalarConverter() {}
 
 void ScalarConverter::convert(const std::string &input)
 {
+	if (isSpecialFloat(input) || isSpecialDouble(input))
+		convertSpecial(input);
+	else
 	if (isChar(input))
 		convertChar(input);
 	else if (isInt(input))
 		convertInt(input);
-	else if (isFloat(input) || isSpecialFloat(input))
+	else if (isFloat(input))
 		convertFloat(input);
-	else if (isDouble(input) || isSpecialDouble(input))
+	else if (isDouble(input))
 		convertDouble(input);
 	else
 		std::cout << "Impossible to convert the literal." << std::endl;
@@ -65,19 +68,18 @@ void ScalarConverter::convertInt(const std::string &input)
 
 void ScalarConverter::convertFloat(const std::string &input)
 {
-	if (isSpecialFloat(input))
-	{
-		float f = std::stof(input);
-		std::cout << "char: impossible" << std::endl;
-		std::cout << "int: impossible" << std::endl;
-		std::cout << "float: " << f << "f" << std::endl;
-		std::cout << "double: " << static_cast<double>(f) << std::endl;
+	std::string floatStr = input.substr(0, input.length() - 1);
+	std::stringstream ss(floatStr);
+	float f;
+	ss >> f;
+		// 変換が失敗した場合
+	if (ss.fail()) {
+		std::cout << "Impossible to convert to float." << std::endl;
 		return;
 	}
 
 	try
 	{
-		float f = std::stof(input);
 		std::cout << "char: ";
 		if (f < 32 || f > 126)
 			std::cout << "Non displayable" << std::endl;
@@ -111,19 +113,17 @@ void ScalarConverter::convertFloat(const std::string &input)
 
 void ScalarConverter::convertDouble(const std::string &input)
 {
-	if (isSpecialDouble(input))
-	{
-		double d = std::stod(input);
-		std::cout << "char: impossible" << std::endl;
-		std::cout << "int: impossible" << std::endl;
-		std::cout << "float: " << static_cast<float>(d) << "f" << std::endl;
-		std::cout << "double: " << d << std::endl;
+	std::stringstream ss(input);
+	double d;
+	ss >> d;
+	// 変換が失敗した場合
+	if (ss.fail()) {
+		std::cout << "Impossible to convert to double." << std::endl;
 		return;
 	}
 
 	try
 	{
-		double d = std::stod(input);
 		std::cout << "char: ";
 		if (d < 32 || d > 126)
 			std::cout << "Non displayable" << std::endl;
@@ -147,6 +147,39 @@ void ScalarConverter::convertDouble(const std::string &input)
 	catch(const std::exception& e)
 	{
 		std::cout << "Impossible to convert to double." << std::endl;
+	}
+}
+
+void ScalarConverter::convertSpecial(const std::string &input)
+{
+	if (input == "nan")
+	{
+		std::cout << "char: impossible" << std::endl;
+		std::cout << "int: impossible" << std::endl;
+		std::cout << "float: nanf" << std::endl;
+		std::cout << "double: nan" << std::endl;
+	}
+	else
+	if (input == "nanf")
+	{
+		std::cout << "char: impossible" << std::endl;
+		std::cout << "int: impossible" << std::endl;
+		std::cout << "float: nanf" << std::endl;
+		std::cout << "double: nan" << std::endl;
+	}
+	else if (input == "+inff")
+	{
+		std::cout << "char: impossible" << std::endl;
+		std::cout << "int: impossible" << std::endl;
+		std::cout << "float: +inff" << std::endl;
+		std::cout << "double: +inf" << std::endl;
+	}
+	else if (input == "-inff")
+	{
+		std::cout << "char: impossible" << std::endl;
+		std::cout << "int: impossible" << std::endl;
+		std::cout << "float: -inff" << std::endl;
+		std::cout << "double: -inf" << std::endl;
 	}
 }
 
