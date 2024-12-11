@@ -50,7 +50,14 @@ void ScalarConverter::convertInt(const std::string &input)
 {
 	try
 	{
-		int i = std::stoi(input);
+		std::stringstream ss(input);
+		int i;
+		ss >> i;
+		// 変換が失敗した場合
+		if (ss.fail()) {
+			std::cout << "Impossible to convert to int." << std::endl;
+			return;
+		}
 		std::cout << "char: ";
 		if (i < 32 || i > 126)
 			std::cout << "Non displayable" << std::endl;
@@ -152,29 +159,21 @@ void ScalarConverter::convertDouble(const std::string &input)
 
 void ScalarConverter::convertSpecial(const std::string &input)
 {
-	if (input == "nan")
+	if (input == "nan" || input == "nanf")
 	{
 		std::cout << "char: impossible" << std::endl;
 		std::cout << "int: impossible" << std::endl;
 		std::cout << "float: nanf" << std::endl;
 		std::cout << "double: nan" << std::endl;
 	}
-	else
-	if (input == "nanf")
-	{
-		std::cout << "char: impossible" << std::endl;
-		std::cout << "int: impossible" << std::endl;
-		std::cout << "float: nanf" << std::endl;
-		std::cout << "double: nan" << std::endl;
-	}
-	else if (input == "+inff")
+	else if (input == "+inff" || input == "+inf")
 	{
 		std::cout << "char: impossible" << std::endl;
 		std::cout << "int: impossible" << std::endl;
 		std::cout << "float: +inff" << std::endl;
 		std::cout << "double: +inf" << std::endl;
 	}
-	else if (input == "-inff")
+	else if (input == "-inff" || input == "-inf")
 	{
 		std::cout << "char: impossible" << std::endl;
 		std::cout << "int: impossible" << std::endl;
@@ -190,24 +189,116 @@ bool ScalarConverter::isChar(const std::string &input)
 
 bool ScalarConverter::isInt(const std::string &input)
 {
-	for (size_t i = 0; i < input.length(); i++)
+	if (input.empty())
+		return false;
+	// 符号の確認
+	size_t startIndex = 0;
+	if (input[0] == '-' || input[0] == '+')
 	{
-		if (i == 0 && (input[i] == '-' || input[i] == '+'))
-			continue;
+		if (input.length() == 1)
+			return false;
+		startIndex = 1;
+	}
+	// 数値の確認
+	for (size_t i = startIndex; i < input.length(); i++)
+	{
 		if (!std::isdigit(input[i]))
 			return false;
+	}
+	// 範囲の確認
+	try
+	{
+		std::stringstream ss(input);
+		int i;
+		ss >> i;
+		if (ss.fail())
+			return false;
+	}
+	catch(const std::exception& e)
+	{
+		return false;
 	}
 	return true;
 }
 
 bool ScalarConverter::isFloat(const std::string &input)
 {
-	return input.find("f") != std::string::npos && input.length() > 1 && input[input.length() - 1] == 'f';
+	if (input.empty() || input.back() != 'f')
+		return false;
+
+	// fを除いた文字列を取得
+	std::string floatStr = input.substr(0, input.length() - 1);
+
+	// 符号の確認
+	size_t startIndex = 0;
+	if (floatStr[0] == '-' || floatStr[0] == '+')
+	{
+		if (floatStr.length() == 1)
+			return false;
+		startIndex = 1;
+	}
+
+	// 数値の確認
+	bool hasDigit = false;
+	bool hasDot = false;
+	bool hasExponent = false;
+
+	while (startIndex < floatStr.length())
+	{
+		char c = floatStr[startIndex];
+		if  (isdigit(c))
+			hasDigit = true;
+		else if (c == '.' && !hasDot && !hasExponent)
+			hasDot =true;
+		else if ((c == 'e' || c == 'E') && !hasExponent && hasDigit)
+		{
+			hasExponent = true;
+			hasDigit = false;
+			if (startIndex + 1 < floatStr.length() && (floatStr[startIndex + 1] == '-' || floatStr[startIndex + 1] == '+'))
+				startIndex++;
+		}
+		else
+			return false;
+		startIndex++;
+	}
+	return hasDigit;
 }
 
 bool ScalarConverter::isDouble(const std::string &input)
 {
-	return input.find(".") != std::string::npos;
+	if (input.empty())
+		return false;
+
+	std::string::const_iterator it = input.begin();
+
+	// 符号の確認
+	if (*it == '-' || *it == '+')
+	{
+		if (input.length() == 1)
+			return false;
+		++it;
+	}
+
+	// 数値の確認
+	bool hasDigit = false;
+	bool hasDot = false;
+
+	for (; it != input.end(); it++)
+	{
+		if (isdigit(*it))
+			hasDigit = true;
+		else if (*it == '.')
+		{
+			if (hasDot)
+				return false;
+			hasDot = true;
+		}
+		else
+			return false;
+	}
+
+	// 一つの数字と小数点があればtrue
+	return (hasDigit && hasDot);
 }
 
 bool ScalarConverter::isSpecialFloat(const std::string &input)

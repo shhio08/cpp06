@@ -2,80 +2,45 @@
 
 int main(void)
 {
-    // // intリテラルのテスト
-    // std::cout << "Test with int literal '42':" << std::endl;
-    // ScalarConverter::convert("42");
 
-    // std::cout << std::endl;
+    std::cout << "Testing Char: 'a'" << std::endl;
+    ScalarConverter::convert("'a'");
 
-    // std::cout << "Test with int literal '-42':" << std::endl;
-    // ScalarConverter::convert("-42");
+    std::cout << "\nTesting Int: 42" << std::endl;
+    ScalarConverter::convert("42");
 
-    // std::cout << std::endl;
+    std::cout << "\nTesting Float: 42.42f" << std::endl;
+    ScalarConverter::convert("42.42f");
 
-    // // charリテラルのテスト
-    // std::cout << "Test with char literal ''a'':" << std::endl;
-    // ScalarConverter::convert("'a'");
+    std::cout << "\nTesting Double: 42.42" << std::endl;
+    ScalarConverter::convert("42.42");
 
-    // std::cout << std::endl;
+    std::cout << "\nTesting Special Float: nanf" << std::endl;
+    ScalarConverter::convert("nanf");
 
-    // // 不正なcharリテラルのテスト（エラーメッセージが出ることを確認）
-    // std::cout << "Test with invalid char literal 'a':" << std::endl;
-    // ScalarConverter::convert("a");
+    std::cout << "\nTesting Special Double: nan" << std::endl;
+    ScalarConverter::convert("nan");
 
-    // std::cout << std::endl;
+    std::cout << "\nTesting Float: +inff" << std::endl;
+    ScalarConverter::convert("+inff");
 
-    // // floatリテラルのテスト
-    // std::cout << "Test with float literal '42.42f':" << std::endl;
-    // ScalarConverter::convert("42.42f");
+    std::cout << "\nTesting Double: -inf" << std::endl;
+    ScalarConverter::convert("-inf");
 
-    // std::cout << std::endl;
+    std::cout << "\nTesting Invalid Char: 'ab'" << std::endl;
+    ScalarConverter::convert("'ab'");
 
-    // std::cout << "Test with float literal '-42.42f':" << std::endl;
-    // ScalarConverter::convert("-42.42f");
+    std::cout << "\nTesting Invalid Int: 42.42" << std::endl;
+    ScalarConverter::convert("42.42");
 
-    // std::cout << std::endl;
+    std::cout << "\nTesting Invalid Float: 42.42" << std::endl;
+    ScalarConverter::convert("42.42");
 
-    // std::cout << "Test with float literal 'nanf':" << std::endl;
-    // ScalarConverter::convert("nanf");
-
-    // std::cout << std::endl;
-
-    // std::cout << "Test with float literal '+inff':" << std::endl;
-    // ScalarConverter::convert("+inff");
-
-    // std::cout << std::endl;
-
-    // std::cout << "Test with float literal '-inff':" << std::endl;
-    // ScalarConverter::convert("-inff");
-
-    // std::cout << std::endl;
-
-    // // doubleリテラルのテスト
-    // std::cout << "Test with double literal '42.42':" << std::endl;
-    // ScalarConverter::convert("42.42");
-
-    // std::cout << std::endl;
-
-    // std::cout << "Test with double literal '-42.42':" << std::endl;
-    // ScalarConverter::convert("-42.42");
-
-    // std::cout << std::endl;
-
-    // std::cout << "Test with double literal 'nan':" << std::endl;
-    // ScalarConverter::convert("nan");
-
-    // std::cout << std::endl;
-
-    // std::cout << "Test with double literal '+inf':" << std::endl;
-    // ScalarConverter::convert("+inf");
-
-    // std::cout << std::endl;
-
-    // std::cout << "Test with double literal '-inf':" << std::endl;
-    // ScalarConverter::convert("-inf");
+    std::cout << "\nTesting Invalid Double: 42.42.42" << std::endl;
+    ScalarConverter::convert("42.42.42");
 
 	//pdfのテスト
+	std::cout << std::endl << std::endl;
 	std::cout << "Test with '0':" << std::endl;
 	ScalarConverter::convert("0");
 	std::cout << std::endl;
@@ -87,6 +52,8 @@ int main(void)
 	std::cout << std::endl;
 	std::cout << "Test with '42.0':" << std::endl;
 	ScalarConverter::convert("42.0");
+
+
 
     return 0;
 }
