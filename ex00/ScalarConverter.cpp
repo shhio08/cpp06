@@ -15,6 +15,29 @@ ScalarConverter &ScalarConverter::operator=(const ScalarConverter &other)
 
 ScalarConverter::~ScalarConverter() {}
 
+// typeはfloatだったら1, doubleだったら2
+static bool isNumWithZeros(const std::string &input, int type)
+{
+	std::string::size_type dot_pos = input.find('.');
+	if (dot_pos == std::string::npos)
+		return false;
+
+	std::string::size_type i = dot_pos + 1;
+	while (i < input.length() && input[i] == '0')
+		i++;
+	if (type == 1)
+	{
+		if (i == input.length() - 1 || input[i] == 'f')
+			return true;
+	}
+	else if (type == 2)
+	{
+		if (i == input.length())
+			return true;
+	}
+	return false;
+}
+
 void ScalarConverter::convert(const std::string &input)
 {
 	if (isSpecialFloat(input) || isSpecialDouble(input))
@@ -34,12 +57,7 @@ void ScalarConverter::convert(const std::string &input)
 
 void ScalarConverter::convertChar(const std::string &input)
 {
-	if (input.length() != 3 || input[0] != '\'' || input[2] != '\'')
-	{
-		std::cout << "Invalid char literal." << std::endl;
-		return;
-	}
-	char c = input[1];
+	char c = input[0];
 	std::cout << "char: '" << c << "'" << std::endl;
 	std::cout << "int: " << static_cast<int>(c) << std::endl;
 	std::cout << "float: " << static_cast<float>(c) << ".0f" << std::endl;
@@ -64,8 +82,9 @@ void ScalarConverter::convertInt(const std::string &input)
 		else
 			std::cout << "'" << static_cast<char>(i) << "'" << std::endl;
 		std::cout << "int: " << i << std::endl;
-		std::cout << "float: " << static_cast<float>(i) << ".0f" << std::endl;
-		std::cout << "double: " << static_cast<double>(i) << ".0" << std::endl;
+		std::cout << std::fixed << std::setprecision(1);
+		std::cout << "float: " << static_cast<float>(i) << "f" << std::endl;
+		std::cout << "double: " << static_cast<double>(i) << std::endl;
 	}
 	catch(const std::exception& e)
 	{
@@ -98,16 +117,13 @@ void ScalarConverter::convertFloat(const std::string &input)
 		else
 			std::cout << static_cast<int>(f) << std::endl;
 
-		// 小数点以下が0の場合はf付きの0桁表示、それ以外は元の表示を維持
-		if (f == static_cast<int>(f))
+		if (isNumWithZeros(input, 1))
 		{
-			// 小数点以下が0なら整数形式で表示
 			std::cout << "float: " << f << ".0f" << std::endl;
 			std::cout << "double: " << static_cast<double>(f) << ".0" << std::endl;
 		}
 		else
 		{
-			// 小数点以下がある場合は通常表示
 			std::cout << "float: " << f << "f" << std::endl;
 			std::cout << "double: " << static_cast<double>(f) << std::endl;
 		}
@@ -141,15 +157,17 @@ void ScalarConverter::convertDouble(const std::string &input)
 			std::cout << "Impossible" << std::endl;
 		else
 			std::cout << static_cast<int>(d) << std::endl;
-		// 小数点以下が0の場合は.0をつけて表示
-		if (d == static_cast<int>(d)) {
+
+		if (isNumWithZeros(input, 2))
+		{
 			std::cout << "float: " << static_cast<float>(d) << ".0f" << std::endl;
 			std::cout << "double: " << d << ".0" << std::endl;
-		} else {
+		}
+		else
+		{
 			std::cout << "float: " << static_cast<float>(d) << "f" << std::endl;
 			std::cout << "double: " << d << std::endl;
 		}
-
 	}
 	catch(const std::exception& e)
 	{
@@ -184,7 +202,7 @@ void ScalarConverter::convertSpecial(const std::string &input)
 
 bool ScalarConverter::isChar(const std::string &input)
 {
-	return input.length() == 3 && input[0] == '\'' && input[2] == '\'';
+	return input.length() == 1 && !isdigit(input[0]);
 }
 
 bool ScalarConverter::isInt(const std::string &input)
@@ -310,3 +328,4 @@ bool ScalarConverter::isSpecialDouble(const std::string &input)
 {
 	return input == "nan" || input == "+inf" || input == "-inf";
 }
+
