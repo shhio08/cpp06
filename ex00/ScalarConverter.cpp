@@ -20,7 +20,7 @@ static bool isNumWithZeros(const std::string &input, int type)
 {
 	std::string::size_type dot_pos = input.find('.');
 	if (dot_pos == std::string::npos)
-		return false;
+		return true;
 
 	std::string::size_type i = dot_pos + 1;
 	while (i < input.length() && input[i] == '0')
@@ -241,7 +241,7 @@ bool ScalarConverter::isInt(const std::string &input)
 
 bool ScalarConverter::isFloat(const std::string &input)
 {
-	if (input.empty() || input.back() != 'f')
+	if (input.empty() || input[input.size() - 1] != 'f')
 		return false;
 
 	// fを除いた文字列を取得

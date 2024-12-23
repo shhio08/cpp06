@@ -18,5 +18,10 @@ int main() {
         std::cout << "Failure: The pointers are different!" << std::endl;
     }
 
+    std::cout << "data: " << &data << std::endl;
+    // uintptr_tは10進数で表示されるため、比較できるようにするために16進数に変換
+    std::cout << "raw: 0x" << std::hex << raw << std::endl;
+    std::cout << "deserializedData: " << deserializedData << std::endl;
+
     return 0;
 }
